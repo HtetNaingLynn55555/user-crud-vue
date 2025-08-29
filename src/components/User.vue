@@ -1,9 +1,9 @@
 <template>
   <div
-    class="font-popin bg-black text-2xl text-white h-dvh flex flex-col justify-start gap-5 pt-2 items-center"
+    class="font-popin bg-black text-2xl text-white min-h-screen flex flex-col justify-start gap-5 pt-2 items-center px-2 md:px-8"
   >
     User List
-    <div>
+    <div class="w-full max-w-6xl mx-auto">
       <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table
           class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -12,12 +12,12 @@
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
           >
             <tr>
-              <th scope="col" class="px-6 py-3">name</th>
-              <th scope="col" class="px-6 py-3">email</th>
-              <th scope="col" class="px-6 py-3">phone</th>
-              <th scope="col" class="px-6 py-3">create time</th>
-              <th scope="col" class="px-6 py-3">update time</th>
-              <th scope="col" class="px-6 py-3">Action</th>
+              <th scope="col" class="px-2 md:px-6 py-3">name</th>
+              <th scope="col" class="px-2 md:px-6 py-3">email</th>
+              <th scope="col" class="px-2 md:px-6 py-3">phone</th>
+              <th scope="col" class="px-2 md:px-6 py-3">create time</th>
+              <th scope="col" class="px-2 md:px-6 py-3">update time</th>
+              <th scope="col" class="px-2 md:px-6 py-3">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -28,29 +28,35 @@
             >
               <th
                 scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                class="px-2 md:px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 {{ user.name }}
               </th>
-              <td class="px-6 py-4">{{ user.email }}</td>
-              <td class="px-6 py-4">{{ user.phone }}</td>
-              <td class="px-6 py-4">{{ formatDate(user.createdAt) }}</td>
-              <td class="px-6 py-4">{{ formatDate(user.updatedAt) }}</td>
-              <td class="px-6 gap-x-1.5 flex py-4">
+              <td class="px-2 md:px-6 py-4">{{ user.email }}</td>
+              <td class="px-2 md:px-6 py-4">{{ user.phone }}</td>
+              <td class="px-2 md:px-6 py-4">
+                {{ formatDate(user.createdAt) }}
+              </td>
+              <td class="px-2 md:px-6 py-4">
+                {{ formatDate(user.updatedAt) }}
+              </td>
+              <td
+                class="px-2 md:px-6 py-4 flex flex-col md:flex-row gap-2 md:gap-1"
+              >
                 <router-link
                   :to="`/user/${user._id}`"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1 text-xs md:text-sm"
                   >Details</router-link
                 >
                 <a
                   href="#"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1 text-xs md:text-sm"
                   @click.prevent="openEditModal(user)"
                   >Edit</a
                 >
                 <a
                   href="#"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1 text-xs md:text-sm"
                   @click.prevent="deleteUser(user._id)"
                   >Delete</a
                 >
@@ -60,13 +66,12 @@
         </table>
       </div>
     </div>
-
     <!-- Edit User Modal -->
     <div
       v-if="showEditModal"
       tabindex="-1"
       aria-hidden="true"
-      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50 px-2"
     >
       <div class="relative p-4 w-full max-w-md h-auto">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -130,7 +135,7 @@
             <div class="flex justify-end">
               <button
                 type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-xs md:text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Update
               </button>

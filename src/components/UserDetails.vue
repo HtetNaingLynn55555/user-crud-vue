@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-black min-h-screen text-white flex flex-col items-center pt-8">
+  <div
+    class="bg-black min-h-screen text-white flex flex-col items-center pt-8 px-2 md:px-0"
+  >
     <div class="w-full max-w-lg bg-gray-800 rounded-lg shadow p-6">
       <h2 class="text-2xl font-bold mb-4">User Details</h2>
       <div v-if="user">
@@ -23,16 +25,16 @@
           <span class="font-semibold">Updated At:</span>
           {{ formatDate(user.updatedAt) }}
         </div>
-        <div class="flex gap-2 mt-8">
+        <div class="flex gap-2 mt-8 flex-col sm:flex-row">
           <button
             @click="goBack"
-            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+            class="w-full sm:w-auto text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
           >
             Back
           </button>
           <button
             @click="openEditModal"
-            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+            class="w-full sm:w-auto text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
           >
             Edit
           </button>
@@ -40,13 +42,12 @@
       </div>
       <div v-else class="text-center">Loading...</div>
     </div>
-
     <!-- Edit Modal -->
     <div
       v-if="showEditModal"
       tabindex="-1"
       aria-hidden="true"
-      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50 px-2"
     >
       <div class="relative p-4 w-full max-w-md h-auto">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -124,7 +125,7 @@
             <div class="flex justify-end">
               <button
                 type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-xs md:text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Update
               </button>
