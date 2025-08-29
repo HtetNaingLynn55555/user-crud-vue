@@ -1,67 +1,47 @@
 <template>
-  <div
-    class="font-popin bg-black text-2xl text-white h-dvh flex flex-col justify-start gap-5 pt-2 items-center"
-  >
-    User List
-    <div>
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table
-          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-        >
-          <thead
-            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+  <div class="bg-black min-h-screen text-white flex flex-col items-center pt-8">
+    <div class="w-full max-w-lg bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-2xl font-bold mb-4">User Details</h2>
+      <div v-if="user">
+        <div class="mb-2">
+          <span class="font-semibold">Name:</span> {{ user.name }}
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Email:</span> {{ user.email }}
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Phone:</span> {{ user.phone }}
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Password:</span> {{ user.password }}
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Created At:</span>
+          {{ formatDate(user.createdAt) }}
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Updated At:</span>
+          {{ formatDate(user.updatedAt) }}
+        </div>
+        <div class="flex gap-2 mt-8">
+          <button
+            @click="goBack"
+            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
           >
-            <tr>
-              <th scope="col" class="px-6 py-3">name</th>
-              <th scope="col" class="px-6 py-3">email</th>
-              <th scope="col" class="px-6 py-3">phone</th>
-              <th scope="col" class="px-6 py-3">create time</th>
-              <th scope="col" class="px-6 py-3">update time</th>
-              <th scope="col" class="px-6 py-3">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="user in users"
-              :key="user.id"
-              class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
-            >
-              <th
-                scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                {{ user.name }}
-              </th>
-              <td class="px-6 py-4">{{ user.email }}</td>
-              <td class="px-6 py-4">{{ user.phone }}</td>
-              <td class="px-6 py-4">{{ formatDate(user.createdAt) }}</td>
-              <td class="px-6 py-4">{{ formatDate(user.updatedAt) }}</td>
-              <td class="px-6 gap-x-1.5 flex py-4">
-                <router-link
-                  :to="`/user/${user._id}`"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
-                  >Details</router-link
-                >
-                <a
-                  href="#"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
-                  @click.prevent="openEditModal(user)"
-                  >Edit</a
-                >
-                <a
-                  href="#"
-                  class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
-                  @click.prevent="deleteUser(user._id)"
-                  >Delete</a
-                >
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            Back
+          </button>
+          <button
+            @click="openEditModal"
+            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded px-3 py-1"
+          >
+            Edit
+          </button>
+        </div>
       </div>
+      <div v-else class="text-center">Loading...</div>
     </div>
 
-    <!-- Edit User Modal -->
+    <!-- Edit Modal -->
     <div
       v-if="showEditModal"
       tabindex="-1"
@@ -127,10 +107,24 @@
                 required
               />
             </div>
+            <div class="mb-4">
+              <label
+                for="editPassword"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Password</label
+              >
+              <input
+                type="text"
+                id="editPassword"
+                v-model="editForm.password"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
             <div class="flex justify-end">
               <button
                 type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Update
               </button>
@@ -141,13 +135,17 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, reactive, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
-const users = ref([]);
+const route = useRoute();
+const router = useRouter();
+const user = ref(null);
 const showEditModal = ref(false);
-const editForm = reactive({ id: "", name: "", email: "", phone: "" });
+const editForm = reactive({ name: "", email: "", phone: "", password: "" });
 
 function formatDate(dateStr) {
   if (!dateStr) return "";
@@ -161,11 +159,28 @@ function formatDate(dateStr) {
   }).format(date);
 }
 
-function openEditModal(user) {
-  editForm.id = user._id || user.id;
-  editForm.name = user.name;
-  editForm.email = user.email;
-  editForm.phone = user.phone;
+async function fetchUser() {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/user/${route.params.id}`
+    );
+    if (!res.ok) throw new Error("Failed to fetch user");
+    user.value = await res.json();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function goBack() {
+  router.push("/");
+}
+
+function openEditModal() {
+  if (!user.value) return;
+  editForm.name = user.value.name;
+  editForm.email = user.value.email;
+  editForm.phone = user.value.phone;
+  editForm.password = user.value.password;
   showEditModal.value = true;
 }
 
@@ -202,21 +217,25 @@ async function updateUser() {
     });
     return;
   }
+  if (!editForm.password || editForm.password.length < 6) {
+    Swal.fire({
+      icon: "error",
+      title: "Validation Error",
+      text: "Password must be at least 6 characters.",
+    });
+    return;
+  }
   try {
     const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/user/${editForm.id}`,
+      `${import.meta.env.VITE_API_BASE_URL}/user/${route.params.id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: editForm.name,
-          email: editForm.email,
-          phone: editForm.phone,
-        }),
+        body: JSON.stringify(editForm),
       }
     );
     if (!res.ok) throw new Error("Failed to update user");
-    await fetchUsers();
+    await fetchUser();
     closeEditModal();
     await Swal.fire({
       icon: "success",
@@ -230,47 +249,7 @@ async function updateUser() {
   }
 }
 
-async function fetchUsers() {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user`);
-    if (!res.ok) throw new Error("Failed to fetch users");
-    users.value = await res.json();
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-async function deleteUser(id) {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  });
-  if (!result.isConfirmed) return;
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete user");
-    await fetchUsers();
-    await Swal.fire({
-      title: "Deleted!",
-      text: "User has been deleted.",
-      icon: "success",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Error deleting user", "error");
-  }
-}
-
-onMounted(fetchUsers);
+onMounted(fetchUser);
 </script>
 
 <style></style>
